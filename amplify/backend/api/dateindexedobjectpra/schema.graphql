@@ -1,0 +1,32 @@
+enum ScheduleStatus {
+  ACTIVE
+  DISACTIVE
+}
+
+type Schedule @model @auth(rules: [{ allow: owner, operations: [create, read, update, delete] }]) {
+  id: ID!
+  name: String!
+  group: String!
+    @index(
+      name         : "byGroup",
+      queryField   : "listSchedulesByGroup"
+    )
+    @index(
+      name         : "byGroupWithStatusAndYearAndMonthAndDateAndHour",
+      queryField   : "listSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHour",
+      sortKeyFields: [
+        "status",
+        "startedYear",
+        "startedMonth",
+        "startedDate",
+        "startedHour"
+      ]
+    )
+  status: ScheduleStatus!
+  startedAt: AWSDateTime
+  finishedAt: AWSDateTime
+  startedYear: String
+  startedMonth: String
+  startedDate: String
+  startedHour: String
+}
