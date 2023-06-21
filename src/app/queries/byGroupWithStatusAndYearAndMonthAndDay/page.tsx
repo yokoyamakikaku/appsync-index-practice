@@ -19,17 +19,11 @@ import {
 } from "@aws-amplify/ui-react"
 
 import { ScheduleStatus } from "@/API"
-import { ListSchedulesVariables } from "./api/types"
-import {
-  listAllSchedules,
-  listAllSchedulesByGroup,
-  listAllSchedulesByGroupWithStatus,
-  listAllSchedulesByGroupWithStatusAndYearAndMonth,
-  listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay
-} from "./api"
 
-import ListSchedulesPerformance from "./ListSchedulesPerformance"
-import { getResultAndPerformance } from './ListSchedulesPerformance/utilities'
+import { listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay } from '@/app/api'
+import ListSchedulesPerformance from '@/app/ListSchedulesPerformance'
+import { ListSchedulesVariables } from '@/app/api/types'
+import { getResultAndPerformance } from '@/app/ListSchedulesPerformance/utilities'
 
 type FormValues = ListSchedulesVariables
 
@@ -40,7 +34,7 @@ const defaultValues: FormValues = {
   finishedDate: format(new Date(), 'yyyy-MM-dd'),
 }
 
-const CompareQueries: FC = () => {
+const ByGroupWithStatusAndYearAndMonthAndDay: FC = () => {
   const { tokens: { space } } = useTheme()
 
   const [listSchedulesVariables, setListSchedulesVariables] = useState<ListSchedulesVariables | null>(null)
@@ -50,52 +44,8 @@ const CompareQueries: FC = () => {
     setListSchedulesVariables(values)
   }
 
-  const listAllSchedulesQuery = useQuery({
-    queryKey: ['schdules', listSchedulesVariables],
-    enabled: listSchedulesVariables !== null,
-    queryFn: async () => await getResultAndPerformance(() => listAllSchedules(listSchedulesVariables as ListSchedulesVariables)),
-    refetchInterval: false,
-    refetchIntervalInBackground: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-  })
-
-  const listAllSchedulesByGroupQuery = useQuery({
-    queryKey: ['schdules', 'byGroup', listSchedulesVariables],
-    enabled: listSchedulesVariables !== null,
-    queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroup(listSchedulesVariables as ListSchedulesVariables)),
-    refetchInterval: false,
-    refetchIntervalInBackground: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-  })
-
-  const listAllSchedulesByGroupWithStatusQuery = useQuery({
-    queryKey: ['schdules', 'byGroupWithStatus', listSchedulesVariables],
-    enabled: listSchedulesVariables !== null,
-    queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroupWithStatus(listSchedulesVariables as ListSchedulesVariables)),
-    refetchInterval: false,
-    refetchIntervalInBackground: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-  })
-
-  const listAllSchedulesByGroupWithStatusAndYearAndMonthQuery = useQuery({
-    queryKey: ['schdules', 'ByGroupWithStatusAndYearAndMonthQuery', listSchedulesVariables],
-    enabled: listSchedulesVariables !== null,
-    queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonth(listSchedulesVariables as ListSchedulesVariables)),
-    refetchInterval: false,
-    refetchIntervalInBackground: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-  })
-
   const listAllSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery = useQuery({
-    queryKey: ['schdules', 'ByGroupWithStatusAndYearAndMonthAndDateAndDayQuery', listSchedulesVariables],
+    queryKey: ['schdules', 'byGroupWithStatusAndYearAndMonthAndDay', listSchedulesVariables],
     enabled: listSchedulesVariables !== null,
     queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay(listSchedulesVariables as ListSchedulesVariables)),
     refetchInterval: false,
@@ -104,6 +54,7 @@ const CompareQueries: FC = () => {
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
   })
+
 
   return (
     <View>
@@ -139,18 +90,6 @@ const CompareQueries: FC = () => {
             </Table>
           </View>
           <ListSchedulesPerformance
-            title="listAllSchedulesQuery"
-            query={listAllSchedulesQuery} />
-          <ListSchedulesPerformance
-            title="listAllSchedulesByGroupQuery"
-            query={listAllSchedulesByGroupQuery} />
-          <ListSchedulesPerformance
-            title="listAllSchedulesByGroupWithStatusQuery"
-            query={listAllSchedulesByGroupWithStatusQuery} />
-          <ListSchedulesPerformance
-            title="listAllSchedulesByGroupWithStatusAndYearAndMonthQuery"
-            query={listAllSchedulesByGroupWithStatusAndYearAndMonthQuery} />
-          <ListSchedulesPerformance
             title="listAllSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery"
             query={listAllSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery} />
         </View>
@@ -159,4 +98,4 @@ const CompareQueries: FC = () => {
   )
 }
 
-export default CompareQueries
+export default ByGroupWithStatusAndYearAndMonthAndDay

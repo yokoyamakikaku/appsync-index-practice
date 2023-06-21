@@ -1,3 +1,4 @@
+import Navigation from "./Navigation"
 import Providers from "./Providers"
 
 export const metadata = {
@@ -14,6 +15,7 @@ export default function RootLayout({
     <html lang="ja">
       <body>
         <Providers>
+          <Navigation />
           {children}
         </Providers>
       </body>

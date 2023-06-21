@@ -19,10 +19,8 @@ import {
 import * as queries from '@/graphql/queries'
 import * as mutations from '@/graphql/mutations'
 
-
-
 import { BulkCreateScheduleVariables, CreateScheduleVariables, ListSchedulesVariables } from './types'
-import { getCreateInputForIndex, getDateRange, getYearAndMonthAndDaySetsFromDateRange, getYearAndMonthSetsFromDateRange } from './utilities'
+import { devideDateString, getCreateInputForIndex, getDateRange } from './utilities'
 
 export async function createSchedule (variables: CreateScheduleVariables) {
   const result = await API.graphql(
@@ -75,7 +73,7 @@ export async function listAllSchedules (variables: ListSchedulesVariables) {
     filter: {
       group: { eq: variables.group },
       status: { eq: variables.status },
-      startedAt: { gt: startedAt, lt: finishedAt }
+      startedAt: { between: [startedAt, finishedAt] }
     }
   }
 
@@ -106,7 +104,7 @@ export async function listAllSchedulesByGroup (variables: ListSchedulesVariables
     group: variables.group,
     filter: {
       status: { eq: variables.status },
-      startedAt: { gt: startedAt, lt: finishedAt }
+      startedAt: { between: [startedAt, finishedAt] }
     }
   }
 
@@ -138,7 +136,7 @@ export async function listAllSchedulesByGroupWithStatus (variables: ListSchedule
   const queryVariables: ListSchedulesByGroupWithStatusQueryVariables = {
     group: variables.group,
     status: { eq: variables.status },
-    filter: { startedAt: { gt: startedAt, lt: finishedAt } }
+    filter: { startedAt: { between: [startedAt, finishedAt] } }
   }
 
   let nextToken: string | null | undefined
@@ -168,38 +166,43 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonth (variable
 
   const schedules:Schedule[] = []
 
-  const yearAndMonthSets = getYearAndMonthSetsFromDateRange([ startedAt, finishedAt ])
+  const { year: startedYear, month: startedMonth } = devideDateString(startedAt)
+  const { year: finishedYear, month: finishedMonth } = devideDateString(finishedAt)
+
   const queryVariables: ListSchedulesByGroupWithStatusAndYearAndMonthQueryVariables = {
     group: variables.group,
-    filter: { startedAt: { gt: startedAt, lt: finishedAt } }
+    filter: { startedAt: { between: [startedAt, finishedAt] } }
   }
-  for (const { year, month } of yearAndMonthSets) {
-    let nextToken: string | null | undefined
-    do {
-      const result = await API.graphql(
-        graphqlOperation(queries.listSchedulesByGroupWithStatusAndYearAndMonth, {
-          ...queryVariables,
-          statusStartedYearStartedMonth: {
-            eq: {
-              status: variables.status,
-              startedYear: year,
-              startedMonth: month
-            }
-          },
-          nextToken
-        } as ListSchedulesByGroupWithStatusAndYearAndMonthQueryVariables)
-      ) as GraphQLResult<ListSchedulesByGroupWithStatusAndYearAndMonthQuery>
 
-      if (result.errors) throw result.errors
-      if (!result.data) throw Error('no data')
+  let nextToken: string | null | undefined
+  do {
+    const result = await API.graphql(
+      graphqlOperation(queries.listSchedulesByGroupWithStatusAndYearAndMonth, {
+        ...queryVariables,
+        statusStartedYearStartedMonth: {
+          between: [{
+            status: variables.status,
+            startedYear: startedYear,
+            startedMonth: startedMonth,
+          }, {
+            status: variables.status,
+            startedYear: finishedYear,
+            startedMonth: finishedMonth,
+          }]
+        },
+        nextToken
+      } as ListSchedulesByGroupWithStatusAndYearAndMonthQueryVariables)
+    ) as GraphQLResult<ListSchedulesByGroupWithStatusAndYearAndMonthQuery>
 
-      for(const item of result.data.listSchedulesByGroupWithStatusAndYearAndMonth?.items ?? []) {
-        if (!item) continue
-        schedules.push(item)
-      }
-      nextToken = result.data.listSchedulesByGroupWithStatusAndYearAndMonth?.nextToken
-    } while (!!nextToken)
-  }
+    if (result.errors) throw result.errors
+    if (!result.data) throw Error('no data')
+
+    for(const item of result.data.listSchedulesByGroupWithStatusAndYearAndMonth?.items ?? []) {
+      if (!item) continue
+      schedules.push(item)
+    }
+    nextToken = result.data.listSchedulesByGroupWithStatusAndYearAndMonth?.nextToken
+  } while (!!nextToken)
 
   return schedules
 }
@@ -209,39 +212,44 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay (va
 
   const schedules:Schedule[] = []
 
-  const yearAndMonthAndDaySets = getYearAndMonthAndDaySetsFromDateRange([ startedAt, finishedAt ])
+  const { year: startedYear, month: startedMonth, day: startedDay } = devideDateString(startedAt)
+  const { year: finishedYear, month: finishedMonth, day: finishedDay } = devideDateString(finishedAt)
   const queryVariables: ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQueryVariables = {
     group: variables.group,
-    filter: { startedAt: { gt: startedAt, lt: finishedAt } }
+    filter: { startedAt: { between: [startedAt, finishedAt] } }
   }
-  for (const { year, month, day } of yearAndMonthAndDaySets) {
-    let nextToken: string | null | undefined
-    do {
-      const result = await API.graphql(
-        graphqlOperation(queries.listSchedulesByGroupWithStatusAndYearAndMonthAndDay, {
-          ...queryVariables,
-          statusStartedYearStartedMonth: {
-            eq: {
-              status: variables.status,
-              startedYear: year,
-              startedMonth: month,
-              startedDay: day
-            }
-          },
-          nextToken
-        } as ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQueryVariables)
-      ) as GraphQLResult<ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery>
 
-      if (result.errors) throw result.errors
-      if (!result.data) throw Error('no data')
+  let nextToken: string | null | undefined
+  do {
+    const result = await API.graphql(
+      graphqlOperation(queries.listSchedulesByGroupWithStatusAndYearAndMonthAndDay, {
+        ...queryVariables,
+        statusStartedYearStartedMonth: {
+          between: [{
+            status: variables.status,
+            startedYear: startedYear,
+            startedMonth: startedMonth,
+            startedDay: startedDay
+          }, {
+            status: variables.status,
+            startedYear: finishedYear,
+            startedMonth: finishedMonth,
+            startedDay: finishedDay
+          }]
+        },
+        nextToken
+      } as ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQueryVariables)
+    ) as GraphQLResult<ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery>
 
-      for(const item of result.data.listSchedulesByGroupWithStatusAndYearAndMonthAndDay?.items ?? []) {
-        if (!item) continue
-        schedules.push(item)
-      }
-      nextToken = result.data.listSchedulesByGroupWithStatusAndYearAndMonthAndDay?.nextToken
-    } while (!!nextToken)
-  }
+    if (result.errors) throw result.errors
+    if (!result.data) throw Error('no data')
+
+    for(const item of result.data.listSchedulesByGroupWithStatusAndYearAndMonthAndDay?.items ?? []) {
+      if (!item) continue
+      schedules.push(item)
+    }
+    nextToken = result.data.listSchedulesByGroupWithStatusAndYearAndMonthAndDay?.nextToken
+  } while (!!nextToken)
 
   return schedules
 }
