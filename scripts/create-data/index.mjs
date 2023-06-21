@@ -170,7 +170,6 @@ async function main () {
       startedYear: startedYear,
       startedMonth: startedMonth,
       startedDay: startedDay,
-      startedHour: startedHour,
       createdAt: createdAt,
       updatedAt: updatedAt,
       ['status']: statusKey,
