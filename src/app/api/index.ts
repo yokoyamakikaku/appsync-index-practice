@@ -1,3 +1,4 @@
+import * as dateFns from 'date-fns'
 import { API, graphqlOperation } from '@aws-amplify/api'
 import { GraphQLResult } from "@aws-amplify/api-graphql"
 import {
@@ -18,7 +19,9 @@ import {
 import * as queries from '@/graphql/queries'
 import * as mutations from '@/graphql/mutations'
 
-import { CreateScheduleVariables, ListSchedulesVariables } from './types'
+
+
+import { BulkCreateScheduleVariables, CreateScheduleVariables, ListSchedulesVariables } from './types'
 import { getCreateInputForIndex, getDateRange, getYearAndMonthAndDaySetsFromDateRange, getYearAndMonthSetsFromDateRange } from './utilities'
 
 export async function createSchedule (variables: CreateScheduleVariables) {
@@ -37,6 +40,29 @@ export async function createSchedule (variables: CreateScheduleVariables) {
   if (result.errors) throw result.errors
   if (!result.data) throw Error('no data')
   return result.data?.createSchedule as Schedule
+}
+
+export  async function bulkCreateSchedule (variables: BulkCreateScheduleVariables) {
+  const variablesSets: CreateScheduleVariables[] = []
+
+  const { count, name, finishedDate, startedDate, status, group } = variables
+  const rangeStartedAt = new Date(startedDate)
+  const duration = new Date(finishedDate).getTime() - rangeStartedAt.getTime()
+  for (let i = 0; i < count; i++) {
+    const startedAt = (
+      dateFns.set(new Date(Math.floor(rangeStartedAt.getTime() + Math.random() * duration)), { minutes: 0 })
+    )
+    const finishedAt = dateFns.add(startedAt, { hours: 1 })
+
+    variablesSets.push({
+      group, name, status,
+      startedAt: startedAt.toISOString(),
+      finishedAt: finishedAt.toISOString(),
+      ...getCreateInputForIndex(startedAt.toISOString())
+    })
+  }
+
+  return await Promise.all(variablesSets.map(createSchedule))
 }
 
 export async function listAllSchedules (variables: ListSchedulesVariables) {

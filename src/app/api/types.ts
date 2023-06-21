@@ -30,6 +30,15 @@ export interface CreateScheduleVariables {
   finishedAt: string
 }
 
+export interface BulkCreateScheduleVariables {
+  name: string
+  group: string
+  status: ScheduleStatus
+  count: number
+  startedDate: string
+  finishedDate: string
+}
+
 export interface ListSchedulesVariables {
   group: string
   status: ScheduleStatus
