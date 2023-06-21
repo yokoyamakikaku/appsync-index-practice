@@ -1,5 +1,5 @@
 "use client"
-import { format } from 'date-fns'
+import { format, set } from 'date-fns'
 import { FC, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
@@ -36,8 +36,8 @@ type FormValues = ListSchedulesVariables
 const defaultValues: FormValues = {
   group: 'Group',
   status: ScheduleStatus.ACTIVE,
-  startedDate: format(new Date(), 'yyyy-MM-dd'),
-  finishedDate: format(new Date(), 'yyyy-MM-dd'),
+  startedDate: format(set(new Date(), { month: 0, date: 1 }), 'yyyy-MM-dd'),
+  finishedDate: format(set(new Date(), { month: 11, date: 31 }), 'yyyy-MM-dd'),
 }
 
 const CompareQueries: FC = () => {
