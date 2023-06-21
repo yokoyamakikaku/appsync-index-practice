@@ -1,6 +1,8 @@
 "use client"
-
+import { format } from 'date-fns'
 import { FC, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useForm } from "react-hook-form"
 import {
   Button,
   Divider,
@@ -15,13 +17,18 @@ import {
   TableRow,
   TableCell
 } from "@aws-amplify/ui-react"
-import { useForm } from "react-hook-form"
-import { format } from 'date-fns'
+
 import { Schedule, ScheduleStatus } from "@/API"
-import { useQuery } from "@tanstack/react-query"
 import { SchedulesAndPerformance } from "./types"
 import { ListSchedulesVariables } from "./api/types"
-import { listAllSchedules, listAllSchedulesByGroup, listAllSchedulesByGroupWithStatus, listAllSchedulesByGroupWithStatusAndYearAndMonth, listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay } from "./api"
+import {
+  listAllSchedules,
+  listAllSchedulesByGroup,
+  listAllSchedulesByGroupWithStatus,
+  listAllSchedulesByGroupWithStatusAndYearAndMonth,
+  listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay
+} from "./api"
+
 import ListSchedulesPerformance from "./ListSchedulesPerformance"
 
 type FormValues = ListSchedulesVariables
@@ -61,31 +68,56 @@ const CompareQueries: FC = () => {
   const listAllSchedulesQuery = useQuery({
     queryKey: ['schdules', listSchedulesVariables],
     enabled: listSchedulesVariables !== null,
-    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedules(listSchedulesVariables as ListSchedulesVariables))
+    queryFn: async () => await getResultAndPerformance(() => listAllSchedules(listSchedulesVariables as ListSchedulesVariables)),
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
   })
 
   const listAllSchedulesByGroupQuery = useQuery({
     queryKey: ['schdules', 'byGroup', listSchedulesVariables],
     enabled: listSchedulesVariables !== null,
-    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroup(listSchedulesVariables as ListSchedulesVariables))
+    queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroup(listSchedulesVariables as ListSchedulesVariables)),
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
   })
 
   const listAllSchedulesByGroupWithStatusQuery = useQuery({
     queryKey: ['schdules', 'byGroupWithStatus', listSchedulesVariables],
     enabled: listSchedulesVariables !== null,
-    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroupWithStatus(listSchedulesVariables as ListSchedulesVariables))
+    queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroupWithStatus(listSchedulesVariables as ListSchedulesVariables)),
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
   })
 
   const listAllSchedulesByGroupWithStatusAndYearAndMonthQuery = useQuery({
     queryKey: ['schdules', 'ByGroupWithStatusAndYearAndMonthQuery', listSchedulesVariables],
     enabled: listSchedulesVariables !== null,
-    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonth(listSchedulesVariables as ListSchedulesVariables))
+    queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonth(listSchedulesVariables as ListSchedulesVariables)),
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
   })
 
   const listAllSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery = useQuery({
     queryKey: ['schdules', 'ByGroupWithStatusAndYearAndMonthAndDateAndDayQuery', listSchedulesVariables],
     enabled: listSchedulesVariables !== null,
-    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay(listSchedulesVariables as ListSchedulesVariables))
+    queryFn: async () => await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay(listSchedulesVariables as ListSchedulesVariables)),
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
   })
 
   return (
