@@ -151,7 +151,7 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonth (variable
     let nextToken: string | null | undefined
     do {
       const result = await API.graphql(
-        graphqlOperation(queries.listSchedules, {
+        graphqlOperation(queries.listSchedulesByGroupWithStatusAndYearAndMonth, {
           ...queryVariables,
           statusStartedYearStartedMonth: {
             eq: {
@@ -192,7 +192,7 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay (va
     let nextToken: string | null | undefined
     do {
       const result = await API.graphql(
-        graphqlOperation(queries.listSchedules, {
+        graphqlOperation(queries.listSchedulesByGroupWithStatusAndYearAndMonthAndDay, {
           ...queryVariables,
           statusStartedYearStartedMonth: {
             eq: {
