@@ -1,19 +1,30 @@
 "use client"
 
 import { FC, useState } from "react"
-import { Button, Divider, Flex, TextField, View, useTheme, Text, SelectField, Heading, Table, TableBody, TableRow, TableCell, Alert } from "@aws-amplify/ui-react"
+import {
+  Button,
+  Divider,
+  Flex,
+  TextField,
+  View,
+  useTheme,
+  SelectField,
+  Heading,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell
+} from "@aws-amplify/ui-react"
 import { useForm } from "react-hook-form"
 import { format } from 'date-fns'
 import { Schedule, ScheduleStatus } from "@/API"
-import { UseQueryResult, useQuery } from "@tanstack/react-query"
-import { QueryRequest, listSchedules, listSchedulesByGroupWithStatusAndYearAndMonthAndDateAndHour } from "./api"
+import { useQuery } from "@tanstack/react-query"
+import { SchedulesAndPerformance } from "./types"
+import { ListSchedulesVariables } from "./api/types"
+import { listAllSchedules, listAllSchedulesByGroup, listAllSchedulesByGroupWithStatus, listAllSchedulesByGroupWithStatusAndYearAndMonth, listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay } from "./api"
+import ListSchedulesPerformance from "./ListSchedulesPerformance"
 
-type FormValues = {
-  group: string
-  status: ScheduleStatus
-  startedDate: string
-  finishedDate: string
-}
+type FormValues = ListSchedulesVariables
 
 const defaultValues: FormValues = {
   group: 'Group',
@@ -21,56 +32,6 @@ const defaultValues: FormValues = {
   startedDate: format(new Date(), 'yyyy-MM-dd'),
   finishedDate: format(new Date(), 'yyyy-MM-dd'),
 }
-
-type SchedulesAndPerformance = {
-  schedules: Schedule[]
-  startedAtLabel: string
-  finishedAtLabel: string
-  executionTimeLabel: string
-}
-
-interface QueryResultProps {
-  title: string
-  query: UseQueryResult<SchedulesAndPerformance>
-}
-
-const QueryResult: FC<QueryResultProps> = ({
-  title,
-  query
-}) => {
-  const { tokens: { space } } = useTheme()
-
-  return (
-    <View marginBlockEnd={space.medium}>
-      <Heading level={4} marginBlockEnd={space.small}>{title}</Heading>
-      {query.isLoading && <Alert variation="info">読み込み中</Alert>}
-      {query.isError && <Alert variation="error">エラー</Alert>}
-      {query.isSuccess && (
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>件数</TableCell>
-              <TableCell>{query.data.schedules.length}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>実行時間</TableCell>
-              <TableCell>{query.data.executionTimeLabel}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>取得開始</TableCell>
-              <TableCell>{query.data.startedAtLabel}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>取得完了</TableCell>
-              <TableCell>{query.data.finishedAtLabel}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      )}
-    </View>
-  )
-}
-
 
 const getResultAndPerformance = async(
   listSchedules: () => Promise<Schedule[]>,
@@ -90,28 +51,41 @@ const getResultAndPerformance = async(
 const CompareQueries: FC = () => {
   const { tokens: { space } } = useTheme()
 
-  const [queryRequest, setQueryRequest] = useState<QueryRequest | null>(null)
+  const [listSchedulesVariables, setListSchedulesVariables] = useState<ListSchedulesVariables | null>(null)
 
   const { register, handleSubmit } = useForm<FormValues>({ defaultValues })
   const onSubmit = (values: FormValues) => {
-    setQueryRequest(values)
+    setListSchedulesVariables(values)
   }
 
-  const listSchedulesQuery = useQuery({
-    queryKey: ['schdules', queryRequest],
-    enabled: queryRequest !== null,
-    async queryFn () {
-      return await getResultAndPerformance(() => listSchedules(queryRequest as QueryRequest))
-    }
+  const listAllSchedulesQuery = useQuery({
+    queryKey: ['schdules', listSchedulesVariables],
+    enabled: listSchedulesVariables !== null,
+    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedules(listSchedulesVariables as ListSchedulesVariables))
   })
 
+  const listAllSchedulesByGroupQuery = useQuery({
+    queryKey: ['schdules', 'byGroup', listSchedulesVariables],
+    enabled: listSchedulesVariables !== null,
+    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroup(listSchedulesVariables as ListSchedulesVariables))
+  })
 
-  const listSchedulesByGroupWithStatusAndYearAndMonthAndDateAndHourQuery = useQuery({
-    queryKey: ['schdules', 'index', queryRequest],
-    enabled: queryRequest !== null,
-    async queryFn () {
-      return await getResultAndPerformance(() => listSchedulesByGroupWithStatusAndYearAndMonthAndDateAndHour(queryRequest as QueryRequest))
-    }
+  const listAllSchedulesByGroupWithStatusQuery = useQuery({
+    queryKey: ['schdules', 'byGroupWithStatus', listSchedulesVariables],
+    enabled: listSchedulesVariables !== null,
+    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroupWithStatus(listSchedulesVariables as ListSchedulesVariables))
+  })
+
+  const listAllSchedulesByGroupWithStatusAndYearAndMonthQuery = useQuery({
+    queryKey: ['schdules', 'ByGroupWithStatusAndYearAndMonthQuery', listSchedulesVariables],
+    enabled: listSchedulesVariables !== null,
+    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonth(listSchedulesVariables as ListSchedulesVariables))
+  })
+
+  const listAllSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery = useQuery({
+    queryKey: ['schdules', 'ByGroupWithStatusAndYearAndMonthAndDateAndDayQuery', listSchedulesVariables],
+    enabled: listSchedulesVariables !== null,
+    queryFn: async () =>  await getResultAndPerformance(() => listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay(listSchedulesVariables as ListSchedulesVariables))
   })
 
   return (
@@ -132,29 +106,36 @@ const CompareQueries: FC = () => {
           <Divider />
         </form>
       </View>
-      {queryRequest && (
+      {listSchedulesVariables && (
         <View>
           <View marginBlockEnd={space.medium}>
             <Heading level={4} marginBlockEnd={space.small}>リクエスト</Heading>
             <Table>
               <TableBody>
-                {Object.entries(queryRequest).map(([key,value]) => (
+                {Object.entries(listSchedulesVariables).map(([key,value]) => (
                   <TableRow key={key}>
                     <TableCell>{key}</TableCell>
-                    <TableCell>
-                      {key === "requestStartedAt" ? (
-                        <Text>{format(new Date(value), 'yyyy-MM-dd HH:mm:ss')}</Text>
-                        ) : (
-                        <Text>{value}</Text>
-                      )}
-                    </TableCell>
+                    <TableCell>{value}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </View>
-          <QueryResult title="listSchedulesQuery" query={listSchedulesQuery} />
-          <QueryResult title="listSchedulesByGroupWithStatusAndYearAndMonthAndDateAndHourQuery" query={listSchedulesByGroupWithStatusAndYearAndMonthAndDateAndHourQuery} />
+          <ListSchedulesPerformance
+            title="listAllSchedulesQuery"
+            query={listAllSchedulesQuery} />
+          <ListSchedulesPerformance
+            title="listAllSchedulesByGroupQuery"
+            query={listAllSchedulesByGroupQuery} />
+          <ListSchedulesPerformance
+            title="listAllSchedulesByGroupWithStatusQuery"
+            query={listAllSchedulesByGroupWithStatusQuery} />
+          <ListSchedulesPerformance
+            title="listAllSchedulesByGroupWithStatusAndYearAndMonthQuery"
+            query={listAllSchedulesByGroupWithStatusAndYearAndMonthQuery} />
+          <ListSchedulesPerformance
+            title="listAllSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery"
+            query={listAllSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery} />
         </View>
       )}
     </View>

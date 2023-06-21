@@ -11,8 +11,7 @@ export type CreateScheduleInput = {
   finishedAt?: string | null,
   startedYear?: string | null,
   startedMonth?: string | null,
-  startedDate?: string | null,
-  startedHour?: string | null,
+  startedDay?: string | null,
 };
 
 export enum ScheduleStatus {
@@ -29,8 +28,7 @@ export type ModelScheduleConditionInput = {
   finishedAt?: ModelStringInput | null,
   startedYear?: ModelStringInput | null,
   startedMonth?: ModelStringInput | null,
-  startedDate?: ModelStringInput | null,
-  startedHour?: ModelStringInput | null,
+  startedDay?: ModelStringInput | null,
   and?: Array< ModelScheduleConditionInput | null > | null,
   or?: Array< ModelScheduleConditionInput | null > | null,
   not?: ModelScheduleConditionInput | null,
@@ -91,8 +89,7 @@ export type Schedule = {
   finishedAt?: string | null,
   startedYear?: string | null,
   startedMonth?: string | null,
-  startedDate?: string | null,
-  startedHour?: string | null,
+  startedDay?: string | null,
   createdAt: string,
   updatedAt: string,
   owner?: string | null,
@@ -107,8 +104,7 @@ export type UpdateScheduleInput = {
   finishedAt?: string | null,
   startedYear?: string | null,
   startedMonth?: string | null,
-  startedDate?: string | null,
-  startedHour?: string | null,
+  startedDay?: string | null,
 };
 
 export type DeleteScheduleInput = {
@@ -124,8 +120,7 @@ export type ModelScheduleFilterInput = {
   finishedAt?: ModelStringInput | null,
   startedYear?: ModelStringInput | null,
   startedMonth?: ModelStringInput | null,
-  startedDate?: ModelStringInput | null,
-  startedHour?: ModelStringInput | null,
+  startedDay?: ModelStringInput | null,
   and?: Array< ModelScheduleFilterInput | null > | null,
   or?: Array< ModelScheduleFilterInput | null > | null,
   not?: ModelScheduleFilterInput | null,
@@ -159,22 +154,47 @@ export enum ModelSortDirection {
 }
 
 
-export type ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyConditionInput = {
-  eq?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput | null,
-  le?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput | null,
-  lt?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput | null,
-  ge?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput | null,
-  gt?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput | null,
-  between?: Array< ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput | null > | null,
-  beginsWith?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput | null,
+export type ModelStringKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
 };
 
-export type ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyInput = {
+export type ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyConditionInput = {
+  eq?: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput | null,
+  le?: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput | null,
+  lt?: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput | null,
+  ge?: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput | null,
+  gt?: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput | null,
+  between?: Array< ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput | null > | null,
+  beginsWith?: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput | null,
+};
+
+export type ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyInput = {
   status?: ScheduleStatus | null,
   startedYear?: string | null,
   startedMonth?: string | null,
-  startedDate?: string | null,
-  startedHour?: string | null,
+};
+
+export type ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyConditionInput = {
+  eq?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput | null,
+  le?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput | null,
+  lt?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput | null,
+  ge?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput | null,
+  gt?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput | null,
+  between?: Array< ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput | null > | null,
+  beginsWith?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput | null,
+};
+
+export type ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyInput = {
+  status?: ScheduleStatus | null,
+  startedYear?: string | null,
+  startedMonth?: string | null,
+  startedDay?: string | null,
 };
 
 export type ModelSubscriptionScheduleFilterInput = {
@@ -186,8 +206,7 @@ export type ModelSubscriptionScheduleFilterInput = {
   finishedAt?: ModelSubscriptionStringInput | null,
   startedYear?: ModelSubscriptionStringInput | null,
   startedMonth?: ModelSubscriptionStringInput | null,
-  startedDate?: ModelSubscriptionStringInput | null,
-  startedHour?: ModelSubscriptionStringInput | null,
+  startedDay?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
   or?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
 };
@@ -238,8 +257,7 @@ export type CreateScheduleMutation = {
     finishedAt?: string | null,
     startedYear?: string | null,
     startedMonth?: string | null,
-    startedDate?: string | null,
-    startedHour?: string | null,
+    startedDay?: string | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -262,8 +280,7 @@ export type UpdateScheduleMutation = {
     finishedAt?: string | null,
     startedYear?: string | null,
     startedMonth?: string | null,
-    startedDate?: string | null,
-    startedHour?: string | null,
+    startedDay?: string | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -286,8 +303,7 @@ export type DeleteScheduleMutation = {
     finishedAt?: string | null,
     startedYear?: string | null,
     startedMonth?: string | null,
-    startedDate?: string | null,
-    startedHour?: string | null,
+    startedDay?: string | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -309,8 +325,7 @@ export type GetScheduleQuery = {
     finishedAt?: string | null,
     startedYear?: string | null,
     startedMonth?: string | null,
-    startedDate?: string | null,
-    startedHour?: string | null,
+    startedDay?: string | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -336,8 +351,7 @@ export type ListSchedulesQuery = {
       finishedAt?: string | null,
       startedYear?: string | null,
       startedMonth?: string | null,
-      startedDate?: string | null,
-      startedHour?: string | null,
+      startedDay?: string | null,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
@@ -367,8 +381,7 @@ export type ListSchedulesByGroupQuery = {
       finishedAt?: string | null,
       startedYear?: string | null,
       startedMonth?: string | null,
-      startedDate?: string | null,
-      startedHour?: string | null,
+      startedDay?: string | null,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
@@ -377,17 +390,17 @@ export type ListSchedulesByGroupQuery = {
   } | null,
 };
 
-export type ListSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHourQueryVariables = {
+export type ListSchedulesByGroupWithStatusQueryVariables = {
   group: string,
-  statusStartedYearStartedMonthStartedDateStartedHour?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyConditionInput | null,
+  status?: ModelStringKeyConditionInput | null,
   sortDirection?: ModelSortDirection | null,
   filter?: ModelScheduleFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHourQuery = {
-  listSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHour?:  {
+export type ListSchedulesByGroupWithStatusQuery = {
+  listSchedulesByGroupWithStatus?:  {
     __typename: "ModelScheduleConnection",
     items:  Array< {
       __typename: "Schedule",
@@ -399,8 +412,69 @@ export type ListSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHourQuery = {
       finishedAt?: string | null,
       startedYear?: string | null,
       startedMonth?: string | null,
-      startedDate?: string | null,
-      startedHour?: string | null,
+      startedDay?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type ListSchedulesByGroupWithStatusAndYearAndMonthQueryVariables = {
+  group: string,
+  statusStartedYearStartedMonth?: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelScheduleFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListSchedulesByGroupWithStatusAndYearAndMonthQuery = {
+  listSchedulesByGroupWithStatusAndYearAndMonth?:  {
+    __typename: "ModelScheduleConnection",
+    items:  Array< {
+      __typename: "Schedule",
+      id: string,
+      name: string,
+      group: string,
+      status: ScheduleStatus,
+      startedAt?: string | null,
+      finishedAt?: string | null,
+      startedYear?: string | null,
+      startedMonth?: string | null,
+      startedDay?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      owner?: string | null,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQueryVariables = {
+  group: string,
+  statusStartedYearStartedMonthStartedDay?: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelScheduleFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQuery = {
+  listSchedulesByGroupWithStatusAndYearAndMonthAndDay?:  {
+    __typename: "ModelScheduleConnection",
+    items:  Array< {
+      __typename: "Schedule",
+      id: string,
+      name: string,
+      group: string,
+      status: ScheduleStatus,
+      startedAt?: string | null,
+      finishedAt?: string | null,
+      startedYear?: string | null,
+      startedMonth?: string | null,
+      startedDay?: string | null,
       createdAt: string,
       updatedAt: string,
       owner?: string | null,
@@ -425,8 +499,7 @@ export type OnCreateScheduleSubscription = {
     finishedAt?: string | null,
     startedYear?: string | null,
     startedMonth?: string | null,
-    startedDate?: string | null,
-    startedHour?: string | null,
+    startedDay?: string | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -449,8 +522,7 @@ export type OnUpdateScheduleSubscription = {
     finishedAt?: string | null,
     startedYear?: string | null,
     startedMonth?: string | null,
-    startedDate?: string | null,
-    startedHour?: string | null,
+    startedDay?: string | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,
@@ -473,8 +545,7 @@ export type OnDeleteScheduleSubscription = {
     finishedAt?: string | null,
     startedYear?: string | null,
     startedMonth?: string | null,
-    startedDate?: string | null,
-    startedHour?: string | null,
+    startedDay?: string | null,
     createdAt: string,
     updatedAt: string,
     owner?: string | null,

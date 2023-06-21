@@ -1,7 +1,6 @@
 import { View, Heading, useTheme } from "@aws-amplify/ui-react"
-import { FC } from "react"
 
-const AuthenticatorHeader: FC = () => {
+const AuthenticatorHeader = () => {
   const { tokens: { space} } = useTheme()
   return (
     <View paddingBlock={space.medium}>

@@ -16,8 +16,7 @@ export const createSchedule = /* GraphQL */ `
       finishedAt
       startedYear
       startedMonth
-      startedDate
-      startedHour
+      startedDay
       createdAt
       updatedAt
       owner
@@ -39,8 +38,7 @@ export const updateSchedule = /* GraphQL */ `
       finishedAt
       startedYear
       startedMonth
-      startedDate
-      startedHour
+      startedDay
       createdAt
       updatedAt
       owner
@@ -62,8 +60,7 @@ export const deleteSchedule = /* GraphQL */ `
       finishedAt
       startedYear
       startedMonth
-      startedDate
-      startedHour
+      startedDay
       createdAt
       updatedAt
       owner

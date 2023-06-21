@@ -109,8 +109,8 @@ async function main () {
       name += ` (${User.Username})`
       userChoices.push({ name, value: User })
     }
-    listUserPoolsNextToken = result.NextToken
-  } while (!!listGraphqlApisNextToken)
+    listUsersNextToken = result.NextToken
+  } while (!!listUsersNextToken)
 
   /** @type {{ User: import('@aws-sdk/client-cognito-identity-provider').UserType }} */
   const { User } = await inquirer.prompt({
@@ -141,34 +141,41 @@ async function main () {
   for (let i = 0; i < count; i++) {
     const date = add(rangeStartDate, { days: floor(random() * 365) })
     const startedAtDate = add(date, { hours: floor(random() * 12) })
-    const finishedAtDate = add(startedAt, { hours: floor(random() * 12) })
+    const finishedAtDate = add(startedAtDate, { hours: floor(random() * 12) })
     const owner = `${User.Username}::${User.Username}`
 
     const startedAt = startedAtDate.toISOString()
     const finishedAt = finishedAtDate.toISOString()
+    const status = ['ACTIVE', 'DISACTIVE'][floor(random() * 2)]
 
     const match = startedAt.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):\d{2}:\d{2}.\d{3}Z/)
     if (!match) throw Error("Invalid Date")
 
     const startedYear = match[1]
     const startedMonth = match[2]
-    const startedDate = match[3]
-    const startedHour = match[4]
+    const startedDay = match[3]
+
+    const statusKey = `${status}`
+    const statusStartedYearStartedMonthKey = `${status}#${startedYear}#${startedMonth}`
+    const statusStartedYearStartedMonthStartedDayKey = `${status}#${startedYear}#${startedMonth}#${startedDay}`
 
     schedules.push({
       __typename: 'Schedule',
       id: uuid(),
       name: `Schedule ${createLabel}#${i + 1}`,
       group: `Group ${floor(20 * random())}`,
-      status: ['ACTIVE', 'DISACTIVE'][floor(random() * 2)],
+      status: status,
       startedAt: startedAt,
       finishedAt: finishedAt,
       startedYear: startedYear,
       startedMonth: startedMonth,
-      startedDate: startedDate,
+      startedDay: startedDay,
       startedHour: startedHour,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      ['status']: statusKey,
+      ['status#startedYear#startedMonth']: statusStartedYearStartedMonthKey,
+      ['status#startedYear#startedMonth#startedDay']: statusStartedYearStartedMonthStartedDayKey,
       owner: owner
     })
   }

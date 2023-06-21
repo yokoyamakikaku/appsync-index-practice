@@ -1,17 +1,15 @@
 "use client"
 
 import { FC } from "react"
-import { Button, TextField, View, useTheme, SelectField, Flex, Heading, Divider, Alert } from "@aws-amplify/ui-react"
-import { useForm } from "react-hook-form"
-import { format, set, add } from 'date-fns'
-import { CreateScheduleMutation, CreateScheduleMutationVariables, Schedule, ScheduleStatus } from "@/API"
-import { useMutation } from "@tanstack/react-query"
 import { GraphQLError } from "graphql"
-import { API, graphqlOperation } from "aws-amplify"
+import { format, set, add } from 'date-fns'
+import { useMutation } from "@tanstack/react-query"
+import { useForm } from "react-hook-form"
+import { Button, TextField, View, useTheme, SelectField, Flex, Heading, Divider, Alert } from "@aws-amplify/ui-react"
 
-import * as mutations from '@/graphql/mutations'
-import { GraphQLResult } from "@aws-amplify/api-graphql"
-import { getDividedISODateString } from "./api"
+import { Schedule, ScheduleStatus } from "@/API"
+import { createSchedule } from "./api"
+import { CreateScheduleVariables } from "./api/types"
 
 type FormValues = {
   name: string
@@ -34,41 +32,17 @@ const defaultValues: FormValues = {
 const CreateSchedule: FC = () => {
   const { tokens: { space } } = useTheme()
 
-  const mutation = useMutation<Schedule, GraphQLError, CreateScheduleMutationVariables>({
-    async mutationFn(variables) {
-      const result = await API.graphql(
-        graphqlOperation(mutations.createSchedule, variables)
-      ) as GraphQLResult<CreateScheduleMutation>
-      if (result.errors) throw result.errors
-      if (!result.data) throw Error('no data')
-      return result.data?.createSchedule as Schedule
-    }
+  const mutation = useMutation<Schedule, GraphQLError, CreateScheduleVariables>({
+    mutationFn: createSchedule
   })
 
   const { register, handleSubmit } = useForm<FormValues>({ defaultValues })
   const onSubmit = (values: FormValues) => {
     const {date, finishedTime,group,startedTime,status , name } = values
-
-    const startedAtDate = new Date(`${date} ${startedTime}`)
-    const finishedAtDate = new Date(`${date} ${finishedTime}`)
-    const startedAt = startedAtDate.toISOString()
-    const finishedAt = finishedAtDate.toISOString()
-
-    const divided = getDividedISODateString(startedAtDate)
-
-    mutation.mutate({
-      input: {
-        group, status, name,
-        startedAt: startedAt,
-        finishedAt: finishedAt,
-        startedYear: divided.year,
-        startedMonth: divided.month,
-        startedDate: divided.date,
-        startedHour: divided.hour,
-      }
-    })
+    const startedAt = new Date(`${date} ${startedTime}`).toISOString()
+    const finishedAt = new Date(`${date} ${finishedTime}`).toISOString()
+    mutation.mutate({ group, name, status, finishedAt, startedAt })
   }
-
 
   return (
     <View marginBlockEnd={space.large}>

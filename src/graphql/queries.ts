@@ -13,8 +13,7 @@ export const getSchedule = /* GraphQL */ `
       finishedAt
       startedYear
       startedMonth
-      startedDate
-      startedHour
+      startedDay
       createdAt
       updatedAt
       owner
@@ -38,8 +37,7 @@ export const listSchedules = /* GraphQL */ `
         finishedAt
         startedYear
         startedMonth
-        startedDate
-        startedHour
+        startedDay
         createdAt
         updatedAt
         owner
@@ -74,8 +72,7 @@ export const listSchedulesByGroup = /* GraphQL */ `
         finishedAt
         startedYear
         startedMonth
-        startedDate
-        startedHour
+        startedDay
         createdAt
         updatedAt
         owner
@@ -86,18 +83,18 @@ export const listSchedulesByGroup = /* GraphQL */ `
     }
   }
 `;
-export const listSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHour = /* GraphQL */ `
-  query ListSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHour(
+export const listSchedulesByGroupWithStatus = /* GraphQL */ `
+  query ListSchedulesByGroupWithStatus(
     $group: String!
-    $statusStartedYearStartedMonthStartedDateStartedHour: ModelScheduleByGroupWithStatusAndYearAndMonthAndDateAndHourCompositeKeyConditionInput
+    $status: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelScheduleFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHour(
+    listSchedulesByGroupWithStatus(
       group: $group
-      statusStartedYearStartedMonthStartedDateStartedHour: $statusStartedYearStartedMonthStartedDateStartedHour
+      status: $status
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit
@@ -112,8 +109,81 @@ export const listSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHour = /* Gr
         finishedAt
         startedYear
         startedMonth
-        startedDate
-        startedHour
+        startedDay
+        createdAt
+        updatedAt
+        owner
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const listSchedulesByGroupWithStatusAndYearAndMonth = /* GraphQL */ `
+  query ListSchedulesByGroupWithStatusAndYearAndMonth(
+    $group: String!
+    $statusStartedYearStartedMonth: ModelScheduleByGroupWithStatusAndYearAndMonthCompositeKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelScheduleFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSchedulesByGroupWithStatusAndYearAndMonth(
+      group: $group
+      statusStartedYearStartedMonth: $statusStartedYearStartedMonth
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        group
+        status
+        startedAt
+        finishedAt
+        startedYear
+        startedMonth
+        startedDay
+        createdAt
+        updatedAt
+        owner
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const listSchedulesByGroupWithStatusAndYearAndMonthAndDay = /* GraphQL */ `
+  query ListSchedulesByGroupWithStatusAndYearAndMonthAndDay(
+    $group: String!
+    $statusStartedYearStartedMonthStartedDay: ModelScheduleByGroupWithStatusAndYearAndMonthAndDayCompositeKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelScheduleFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSchedulesByGroupWithStatusAndYearAndMonthAndDay(
+      group: $group
+      statusStartedYearStartedMonthStartedDay: $statusStartedYearStartedMonthStartedDay
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        group
+        status
+        startedAt
+        finishedAt
+        startedYear
+        startedMonth
+        startedDay
         createdAt
         updatedAt
         owner

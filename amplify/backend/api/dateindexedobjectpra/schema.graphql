@@ -12,14 +12,27 @@ type Schedule @model @auth(rules: [{ allow: owner, operations: [create, read, up
       queryField   : "listSchedulesByGroup"
     )
     @index(
-      name         : "byGroupWithStatusAndYearAndMonthAndDateAndHour",
-      queryField   : "listSchedulesbyGroupWithStatusAndYearAndMonthAndDateAndHour",
+      name         : "byGroupWithStatus",
+      queryField   : "listSchedulesByGroupWithStatus",
+      sortKeyFields: ["status"]
+    )
+    @index(
+      name         : "byGroupWithStatusAndYearAndMonth",
+      queryField   : "listSchedulesByGroupWithStatusAndYearAndMonth",
+      sortKeyFields: [
+        "status",
+        "startedYear",
+        "startedMonth"
+      ]
+    )
+    @index(
+      name         : "byGroupWithStatusAndYearAndMonthAndDay",
+      queryField   : "listSchedulesByGroupWithStatusAndYearAndMonthAndDay",
       sortKeyFields: [
         "status",
         "startedYear",
         "startedMonth",
-        "startedDate",
-        "startedHour"
+        "startedDay",
       ]
     )
   status: ScheduleStatus!
@@ -27,6 +40,5 @@ type Schedule @model @auth(rules: [{ allow: owner, operations: [create, read, up
   finishedAt: AWSDateTime
   startedYear: String
   startedMonth: String
-  startedDate: String
-  startedHour: String
+  startedDay: String
 }
