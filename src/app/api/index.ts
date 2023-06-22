@@ -22,6 +22,8 @@ import * as mutations from '@/graphql/mutations'
 import { BulkCreateScheduleVariables, CreateScheduleVariables, ListSchedulesVariables } from './types'
 import { devideDateString, getCreateInputForIndex, getDateRange } from './utilities'
 
+const DEFAULT_LIMIT = 9999999
+
 export async function createSchedule (variables: CreateScheduleVariables) {
   const result = await API.graphql(
     graphqlOperation(mutations.createSchedule, {
@@ -70,6 +72,7 @@ export async function listAllSchedules (variables: ListSchedulesVariables) {
   ] = getDateRange(variables.startedDate, variables.finishedDate)
 
   const queryVariables: ListSchedulesQueryVariables = {
+    limit: DEFAULT_LIMIT,
     filter: {
       group: { eq: variables.group },
       status: { eq: variables.status },
@@ -101,6 +104,7 @@ export async function listAllSchedulesByGroup (variables: ListSchedulesVariables
   const [startedAt, finishedAt] = getDateRange(variables.startedDate, variables.finishedDate)
 
   const queryVariables: ListSchedulesByGroupQueryVariables = {
+    limit: DEFAULT_LIMIT,
     group: variables.group,
     filter: {
       status: { eq: variables.status },
@@ -134,6 +138,7 @@ export async function listAllSchedulesByGroupWithStatus (variables: ListSchedule
   const schedules:Schedule[] = []
 
   const queryVariables: ListSchedulesByGroupWithStatusQueryVariables = {
+    limit: DEFAULT_LIMIT,
     group: variables.group,
     status: { eq: variables.status },
     filter: { startedAt: { between: [startedAt, finishedAt] } }
@@ -170,6 +175,7 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonth (variable
   const { year: finishedYear, month: finishedMonth } = devideDateString(finishedAt)
 
   const queryVariables: ListSchedulesByGroupWithStatusAndYearAndMonthQueryVariables = {
+    limit: DEFAULT_LIMIT,
     group: variables.group,
     filter: { startedAt: { between: [startedAt, finishedAt] } }
   }
@@ -215,6 +221,7 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay (va
   const { year: startedYear, month: startedMonth, day: startedDay } = devideDateString(startedAt)
   const { year: finishedYear, month: finishedMonth, day: finishedDay } = devideDateString(finishedAt)
   const queryVariables: ListSchedulesByGroupWithStatusAndYearAndMonthAndDayQueryVariables = {
+    limit: DEFAULT_LIMIT,
     group: variables.group,
     filter: { startedAt: { between: [startedAt, finishedAt] } }
   }
@@ -224,7 +231,7 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay (va
     const result = await API.graphql(
       graphqlOperation(queries.listSchedulesByGroupWithStatusAndYearAndMonthAndDay, {
         ...queryVariables,
-        statusStartedYearStartedMonth: {
+        statusStartedYearStartedMonthStartedDay: {
           between: [{
             status: variables.status,
             startedYear: startedYear,
