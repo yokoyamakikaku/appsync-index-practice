@@ -122,11 +122,18 @@ async function main () {
 
   const TableName = ScheduleDataSource.dynamodbConfig.tableName
 
+  const { group } = await inquirer.prompt({
+    type: "input",
+    message: "グループ名を入力してください",
+    name: "group",
+    default: 'Group'
+  })
+
   const { count } = await inquirer.prompt({
     type: "number",
     message: "作成するデータの数を入力してください",
     name: "count",
-    default: 10000
+    default: 5000
   })
 
   if (count < 1) throw Error("1より小さい値が入力されました")
@@ -163,7 +170,7 @@ async function main () {
       __typename: 'Schedule',
       id: uuid(),
       name: `Schedule ${createLabel}#${i + 1}`,
-      group: `Group ${floor(20 * random())}`,
+      group: group,
       status: status,
       startedAt: startedAt,
       finishedAt: finishedAt,
