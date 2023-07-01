@@ -2,7 +2,7 @@
 
 import { FC } from "react"
 import { GraphQLError } from "graphql"
-import { format } from 'date-fns'
+import { format, set } from 'date-fns'
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { Button, TextField, View, useTheme, SelectField, Flex, Heading, Divider, Alert } from "@aws-amplify/ui-react"
@@ -20,13 +20,16 @@ type FormValues = {
   count: number
 }
 
-const defaultValues: FormValues = {
-  name: 'Schedule',
-  group: 'Group',
-  status: ScheduleStatus.ACTIVE,
-  startedDate: format(new Date(), 'yyyy-MM-dd'),
-  finishedDate: format(new Date(), 'yyyy-MM-dd'),
-  count: 10
+const getDefaultValues = () => {
+  const defaultValues: FormValues = {
+    name: 'Schedule',
+    group: 'Group',
+    status: ScheduleStatus.ACTIVE,
+    startedDate: format(set(new Date(), { month: 0, date: 1 }), 'yyyy-MM-dd'),
+    finishedDate: format(set(new Date(), { month: 11, date: 31}), 'yyyy-MM-dd'),
+    count: 10
+  }
+  return defaultValues
 }
 
 const BulkCreateSchedule: FC = () => {
@@ -36,7 +39,7 @@ const BulkCreateSchedule: FC = () => {
     mutationFn: bulkCreateSchedule
   })
 
-  const { register, handleSubmit } = useForm<FormValues>({ defaultValues })
+  const { register, handleSubmit } = useForm<FormValues>({ defaultValues: getDefaultValues() })
   const onSubmit = (values: FormValues) => {
     mutation.mutate(values)
   }
