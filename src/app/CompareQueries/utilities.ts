@@ -17,7 +17,7 @@ function convertMilliseconds(ms: number) {
 export function getQueryResult(name: string, query: UseQueryResult<{
   startedAt: number
   finishedAt: number
-  items: Schedule[][]
+  items: any[][]
 }>) {
   if (!query.isSuccess) {
     return { name }

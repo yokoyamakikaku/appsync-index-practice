@@ -16,9 +16,7 @@ import { useCompareQueries } from './hooks'
 
 const CompareQueries: FC = () => {
   const { tokens: { space } } = useTheme()
-
   const { execute, queryResults } = useCompareQueries()
-
 
   return (
     <View>
