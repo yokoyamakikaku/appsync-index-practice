@@ -17,3 +17,13 @@ export interface YearAndMonthAndDaySet {
   month: string
   day: string
 }
+
+export type ListScheduleIdsByGroupWithStatusQuery = {
+  listSchedulesByGroupWithStatus?:  {
+    __typename: "ModelScheduleConnection",
+    items:  Array< {
+      id: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};

@@ -15,9 +15,10 @@ import {
 } from '@/API'
 import * as queries from '@/graphql/queries'
 
-import { ListSchedulesVariables } from './types'
+import { ListScheduleIdsByGroupWithStatusQuery, ListSchedulesVariables } from './types'
 import { devideDateString, getDateRange } from './utilities'
 import { DEFAULT_LIMIT } from './constants'
+import { listScheduleIdsByGroupWithStatus } from './queries'
 
 async function recursiveCallApi <Result extends GraphQLResult, TData extends unknown> (
   call: (nextToken?: string) => Promise<Result>,
@@ -118,7 +119,7 @@ export async function listAllSchedulesByGroupWithStatus (variables: ListSchedule
   return await recursiveCallApi<GraphQLResult<ListSchedulesByGroupWithStatusQuery>, Schedule>(
     async (nextToken) => {
       return await API.graphql(
-        graphqlOperation(queries.listSchedulesByGroup, { ...queryVariables, nextToken } as ListSchedulesByGroupWithStatusQueryVariables)
+        graphqlOperation(queries.listSchedulesByGroupWithStatus, { ...queryVariables, nextToken } as ListSchedulesByGroupWithStatusQueryVariables)
       ) as GraphQLResult<ListSchedulesByGroupWithStatusQuery>
     },
     (result) => {
@@ -199,6 +200,30 @@ export async function listAllSchedulesByGroupWithStatusAndYearAndMonthAndDay (va
     (result) => {
       const items = result.data?.listSchedulesByGroupWithStatusAndYearAndMonthAndDay?.items as Schedule[]
       const nextToken = result.data?.listSchedulesByGroupWithStatusAndYearAndMonthAndDay?.nextToken ?? undefined
+      return { items, nextToken }
+    }
+  )
+}
+
+export async function listAllScheduleIdsByGroupWithStatus (variables: ListSchedulesVariables) {
+  const [startedAt, finishedAt] = getDateRange(variables.startedDate, variables.finishedDate)
+
+  const queryVariables: ListSchedulesByGroupWithStatusQueryVariables = {
+    limit: DEFAULT_LIMIT,
+    group: variables.group,
+    status: { eq: variables.status },
+    filter: { startedAt: { between: [startedAt, finishedAt] } }
+  }
+
+  return await recursiveCallApi<GraphQLResult<ListScheduleIdsByGroupWithStatusQuery>, Pick<Schedule, 'id'>>(
+    async (nextToken) => {
+      return await API.graphql(
+        graphqlOperation(listScheduleIdsByGroupWithStatus, { ...queryVariables, nextToken } as ListSchedulesByGroupWithStatusQueryVariables)
+      ) as GraphQLResult<ListScheduleIdsByGroupWithStatusQuery>
+    },
+    (result) => {
+      const items = result.data?.listSchedulesByGroupWithStatus?.items as Schedule[]
+      const nextToken = result.data?.listSchedulesByGroupWithStatus?.nextToken ?? undefined
       return { items, nextToken }
     }
   )
