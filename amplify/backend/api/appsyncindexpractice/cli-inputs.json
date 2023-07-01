@@ -1,11 +1,11 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "dateindexedobjectpra",
+    "apiName": "appsyncindexpractice",
     "serviceName": "AppSync",
     "defaultAuthType": {
       "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authdateindexedobjectpra9b614f58"
+      "cognitoUserPoolId": "authappsyncindexpractice81e4c08d"
     }
   }
 }

@@ -1,13 +1,13 @@
 {
   "api": {
-    "dateindexedobjectpra": {
+    "appsyncindexpractice": {
       "dependsOn": [
         {
           "attributes": [
             "UserPoolId"
           ],
           "category": "auth",
-          "resourceName": "dateindexedobjectpra9b614f58"
+          "resourceName": "appsyncindexpractice81e4c08d"
         }
       ],
       "output": {
@@ -16,7 +16,7 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "authdateindexedobjectpra9b614f58"
+              "userPoolId": "authappsyncindexpractice81e4c08d"
             }
           }
         }
@@ -26,7 +26,7 @@
     }
   },
   "auth": {
-    "dateindexedobjectpra9b614f58": {
+    "appsyncindexpractice81e4c08d": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
